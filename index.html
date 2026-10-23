@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Estação de Recarga</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem}
+input,select,button{padding:.4rem;margin:.15rem}table{border-collapse:collapse;width:100%;margin:.5rem 0}
+td,th{border:1px solid #ccc;padding:.3rem .5rem;text-align:left}pre{background:#f3f3f3;padding:.6rem}
+</style></head><body>
+<h1>⚡ Estação de Recarga</h1>
+<h3>Nova sessão (a tarifa é calculada pelo backend Python)</h3>
+<input id="id" placeholder="ID" type="number" size="4"><input id="veiculo" placeholder="Veículo">
+<input id="energia" placeholder="kWh" type="number" step="0.1"><input id="tempo" placeholder="Minutos" type="number">
+<select id="carregador"><option>AC</option><option>DC</option></select>
+<button onclick="cadastrar()">Cadastrar</button> <button onclick="exemplo()">Carregar exemplos</button>
+<p id="msg"></p>
+<h3>Sessões</h3>
+Ordenar (Bubble Sort):
+<select id="ord" onchange="listar()"><option value="">Ordem de cadastro</option><option>id</option><option>energia</option><option>custo</option><option>tempo</option></select>
+Buscar ID (Busca Sequencial): <input id="busca" type="number" style="width:5rem"><button onclick="buscar()">Buscar</button>
+<table><thead><tr><th>ID</th><th>Veículo</th><th>kWh</th><th>Min</th><th>Tipo</th><th>Custo (R$)</th></tr></thead><tbody id="tb"></tbody></table>
+<button onclick="stats()">Estatísticas</button> <button onclick="relatorio()">Relatório final</button>
+<pre id="saida"></pre>
+<script>
+const $=id=>document.getElementById(id);
+async function api(url,opt){const r=await fetch(url,opt);return {ok:r.ok,d:await r.json()}}
+async function listar(){const {d}=await api('/api/sessoes?ordenar='+$('ord').value);
+ $('tb').innerHTML=d.map(s=>`<tr><td>${s.id}</td><td>${s.veiculo}</td><td>${s.energia}</td><td>${s.tempo}</td><td>${s.carregador}</td><td>${s.custo.toFixed(2)}</td></tr>`).join('')}
+async function cadastrar(){const b={};['id','veiculo','energia','tempo','carregador'].forEach(k=>b[k]=$(k).value);
+ const {d}=await api('/api/sessoes',{method:'POST',body:JSON.stringify(b)});$('msg').textContent=d.msg;listar()}
+async function exemplo(){await api('/api/exemplo',{method:'POST'});listar()}
+async function buscar(){const {ok,d}=await api('/api/busca?id='+$('busca').value);
+ $('saida').textContent=ok?`Encontrada na posição ${d.posicao}:\n`+JSON.stringify(d.sessao,null,2):d.erro}
+async function stats(){const {d}=await api('/api/estatisticas');$('saida').textContent=JSON.stringify(d,null,2)}
+async function relatorio(){const {d}=await api('/api/relatorio');$('saida').textContent=d.texto}
+listar();
+</script></body></html>
