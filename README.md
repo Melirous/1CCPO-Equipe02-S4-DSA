@@ -30,5 +30,3 @@ Abra http://localhost:8000
 ## Evolução
 Sprint 3: menu em console (`Sessao`, Busca Sequencial, Bubble Sort).
 Sprint 4: mesma lógica + tarifação, relatório e interface Web integrada ao backend.
-
-Roteiro do vídeo: [ROTEIRO.md](ROTEIRO.md)
