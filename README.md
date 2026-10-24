@@ -14,6 +14,9 @@ python app.py        # Python 3.9+, sem dependências externas
 ```
 Abra http://localhost:8000
 
+## Link do vídeo:
+https://youtu.be/e1v39awbE84
+
 ## Arquitetura
 `Interface Web (index.html)` → `API HTTP (app.py)` → `Funções Python` → `JSON` → `Interface`
 
